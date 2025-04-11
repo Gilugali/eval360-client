@@ -1,25 +1,30 @@
 <template>
   <n-config-provider>
-    <n-layout has-sider style="height: 100vh">
-      <SideBar v-model:collapsed="sidebarCollapsed" />
+    <template v-if="isAuthPage">
+      <router-view />
+    </template>
+    <template v-else>
+      <n-layout has-sider style="height: 100vh">
+        <SideBar v-model:collapsed="sidebarCollapsed" v-if="!isAuthPage" />
 
-      <n-layout :style="contentStyle">
-        <NavBar v-model:collapsed="sidebarCollapsed" />
+        <n-layout :style="contentStyle">
+          <NavBar v-model:collapsed="sidebarCollapsed" v-if="!isAuthPage" />
 
-        <n-layout-content
-          :style="{
-            padding: '24px',
-            backgroundColor: '#f9fafb',
-            height: 'calc(100vh - 64px)',
-            overflowY: 'auto',
-          }"
-        >
-          <slot>
-            <p>Main content goes in here</p>
-          </slot>
-        </n-layout-content>
+          <n-layout-content
+            :style="{
+              padding: '24px',
+              backgroundColor: '#f9fafb',
+              height: 'calc(100vh - 64px)',
+              overflowY: 'auto',
+            }"
+          >
+            <template>
+              <router-view />
+            </template>
+          </n-layout-content>
+        </n-layout>
       </n-layout>
-    </n-layout>
+    </template>
   </n-config-provider>
 </template>
 
@@ -28,6 +33,7 @@ import { ref, computed, onMounted } from 'vue'
 import { NConfigProvider, NLayout, NLayoutContent } from 'naive-ui'
 import SideBar from '@/components/SideBar.vue'
 import NavBar from '@/components/NavBar.vue'
+import { useRoute } from 'vue-router'
 
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 0)
 const mobileBreakpoint = 768
@@ -50,9 +56,10 @@ const handleResize = () => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
-
   handleResize()
 })
+const route = useRoute()
+const isAuthPage = computed(() => route.path === '/login')
 </script>
 
 <style>

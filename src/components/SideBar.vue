@@ -116,7 +116,7 @@ onUnmounted(() => {
 
 const handleMenuClick = (item) => {
   console.log(`Clicked menu item: ${item.name}`)
-  // On mobile, clicking a menu item could close the sidebar
+
   if (isMobile.value) {
     emit('update:collapsed', true)
   }
